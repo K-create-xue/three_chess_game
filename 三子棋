@@ -1,0 +1,173 @@
+#include<iostream>
+//#include<stdlib.h>
+using namespace std;
+#define rows 3
+#define cols 3
+
+//1.开始游戏界面
+//2.打印棋盘
+//3.用户下棋，判断是否结束（平局或者赢或者输）
+//4.电脑下棋判断是否结束（平局或者赢或者输）
+//5.game over
+
+//initialize the board of three chess
+
+
+
+void initBoard(char board[rows][cols])
+{
+	for (size_t row = 0; row< rows; ++row)
+	{
+		for (size_t col = 0; col < cols; ++col)
+		{
+			board[row][col] = ' ';
+		}
+	}
+}
+
+//print the board of three chess
+void printBoard(char board[rows][cols])
+{
+	cout << " ----- " << endl;
+	for (int row = 0; row < rows; ++row)
+	{
+		cout << '|' << board[row][0] << '|' << board[row][1] << '|' << board[row][2] << '|' << endl;
+		cout << " ----- " << endl;
+	}
+}
+
+//o replace user
+//x repalce computer
+void userMove(char board[rows][cols])
+{
+	//1.提醒用户下棋
+	//2.判断位置是否正确，“越界or有琪”两种情况；
+	//3.合法，判断是否结束，平局或者输了，
+	//4.将位置变为'o';
+	size_t row = 0, col = 0;
+	
+	while (1)
+	{
+		cout << "please input position:" << endl;
+
+		cin >> row >> col;
+		//超出范围
+		//if (!(row >= 0 && row < 3) || !(col >= 0 && col < 3))
+		if(row>=3||col>=3)
+		{
+			cout << "your inputs is not in range,please again input" << endl;
+			
+			continue;
+		}
+		//位置被占用
+		else if (board[row][col] != ' ')
+		{
+			cout << "this position already exists,please again unput" << endl;
+			
+
+			continue;
+		}
+		else
+			board[row][col] = 'o';
+		break;
+	}
+}
+
+//computer move
+void computerMove(char board[rows][cols])
+{
+	//1.电脑产生随机数
+	//2.判断随机数是否合乎要求
+	//3.将位置变为'x'
+
+	while (1)
+	{
+		int row = rand() % rows, col = rand() % cols;
+
+		if (board[row][col] != ' ')
+			continue;
+		else
+		{
+			board[row][col] = 'x';
+			break;
+		}
+	}
+}
+
+bool isFull(char board[rows][cols])
+{
+	for (int row = 0; row < rows; ++row)
+	{
+		for (int col = 0; col < cols; ++col)
+		{
+			if (board[row][col] == ' ')
+				return false;
+		}
+	}
+	return true;
+}
+
+//judge the game whether is over
+int checkOver(char board[rows][cols])
+{
+	//check the rows
+	for (int row = 0; row < rows; ++row)
+	{
+		if (board[row][0] == board[row][1]&&board[row][0] == board[row][2])
+			return board[row][0];
+	}
+
+	//check the cols
+	for (int col = 0; col < cols; ++col)	
+	{
+		if (board[0][col] == board[1][col] == board[2][col])
+			return board[0][col];
+	}
+	if (board[0][0] == board[1][1] == board[2][2]
+		|| board[0][2] == board[1][1] == board[2][0])
+		return board[1][1];
+
+	//是否已经满了
+	if (isFull(board))
+		return '1';
+	else
+		return '0';
+}
+
+int main()
+{
+
+	system("title smile game");
+	system("mode con cols=50 lines=20");
+	system("color e2");
+	char board[rows][cols];
+	initBoard(board);
+	char winner = ' ';
+	while (1)
+	{
+		//
+		printBoard(board);
+		userMove(board);
+		system("cls");
+		printBoard(board);
+		winner = checkOver(board);
+		if (winner == '1'||winner=='o'||winner=='x')
+			break;
+
+		computerMove(board);
+		system("cls");
+		printBoard(board);
+		winner = checkOver(board);
+		if (winner == '1' || winner == 'o' || winner == 'x')
+			break;
+
+	}
+	printBoard(board);
+	if (winner == 'x')
+		cout << "winner: computer" << endl;
+	else if (winner == 'o')
+		cout << "winner: you" << endl;
+	else if (winner == '1')
+		cout << "dogfall" << endl;
+	return 0;
+}
